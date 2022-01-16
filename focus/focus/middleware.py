@@ -19,6 +19,19 @@ class HandleExceptionMiddleware:
 
     def __call__(self, request: Request):
         response = self.get_response(request)
+        if isinstance(response, Response):
+            if "error_code" not in response.data:
+                response.data["error_code"] = GENERAL_ERROR_CODE
+                response.data["error_message"] = GENERAL_ERROR_MESSAGE
+                response.data["data"] = {
+                    "detail": response.data.get("detail", "Request failed")
+                }
+                if not response.data["data"]:
+                    response.data["data"] = None
+                if "detail" in response.data:
+                    response.data.pop("detail")
+            response._is_rendered = False
+            response.render()
         return response
 
     def process_exception(self, request: Request, exception: Exception) -> Optional[Response]:

@@ -1,11 +1,13 @@
 from pathlib import Path
+import dj_database_url
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = 'django-insecure-y7yz^5_8-3x99%z5fvrzmc+@aek3^m*1!)k3)a55e(c5%dcb*+'
 DEBUG = False
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', "*"]
 TOKEN_LIEFTIME = 6000
 
 
@@ -62,11 +64,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'focus.wsgi.application'
 
+print(dj_database_url.config(default=os.environ.get(
+    'DATABASE_URL') or f"sqlite://{BASE_DIR} /db.sqlite3"))
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL', f"sqlite://./db.sqlite3 "))
 }
 
 

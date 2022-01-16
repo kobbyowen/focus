@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import patch
-from focus.auth.models import UserManager
+from user_auth.models import UserManager
 
 
 class TestUserManager(TestCase):
