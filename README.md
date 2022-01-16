@@ -1,6 +1,7 @@
 # FOCUS
 
 Provides APIs to manage pictures. Allows you to group pictures into albums
+https://focus-photo-management.herokuapp.com
 
 ## Deployment Steps (DEVELOPMENT)
 
@@ -27,3 +28,5 @@ BROKER_URL
 ```
 
 ## API Documentation
+
+https://documenter.getpostman.com/view/13293299/UVXkmZyr
