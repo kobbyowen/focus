@@ -25,7 +25,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user_auth'
+    'user_auth',
+    'focusapi'
 ]
 
 MIDDLEWARE = [
@@ -91,5 +92,6 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+UPLOADS_DIR = 'uploads/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

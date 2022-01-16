@@ -50,6 +50,9 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     objects = UserManager()
 
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self) -> Text:
         return f"<User : {self.username}>"
 
