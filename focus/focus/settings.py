@@ -4,11 +4,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = 'django-insecure-y7yz^5_8-3x99%z5fvrzmc+@aek3^m*1!)k3)a55e(c5%dcb*+'
-
-DEBUG = True
-
-ALLOWED_HOSTS = []
-TOKEN_LIEFTIME = 600
+DEBUG = False
+ALLOWED_HOSTS = ['127.0.0.1']
+TOKEN_LIEFTIME = 6000
 
 
 REST_FRAMEWORK = {
@@ -17,7 +15,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'user_auth.backend.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 2,
 }
 
 INSTALLED_APPS = [
@@ -36,6 +36,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "focus.middleware.HandleExceptionMiddleware"
 
 ]
 

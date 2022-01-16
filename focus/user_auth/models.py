@@ -51,7 +51,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     objects = UserManager()
 
     def __str__(self) -> Text:
-        return f"<User : {username}>"
+        return f"<User : {self.username}>"
 
     @property
     def is_staff(self) -> Text:

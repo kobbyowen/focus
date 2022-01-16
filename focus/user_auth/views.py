@@ -10,14 +10,14 @@ from focus.errors import *
 
 def _get_error_response(code: int, message: Text, data: Any, **kwargs) -> Response:
     return Response({
-        "errorCode": code, "errorMessage": message, "data": data
+        "error_code": code, "error_message": message, "data": data
     }, status=kwargs.get("status", status.HTTP_400_BAD_REQUEST))
 
 
 def _get_success_response(data: Any, **kwargs: Dict[Text, Any]) -> Response:
 
     return Response({
-        "errorCode": SUCCESS_CODE, "errorMessage": SUCCESS_MESSAGE, "data": data
+        "error_code": SUCCESS_CODE, "error_message": SUCCESS_MESSAGE, "data": data
     }, status=kwargs.get("status", status.HTTP_200_OK))
 
 

@@ -12,27 +12,28 @@ class JWTAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request: Request) -> Optional[Tuple[User, Text]]:
         request.user = None
 
-        header = authentication.get_authorization_header(request).split()
+        header = authentication.get_authorization_header(
+            request).decode().split()
 
         if not header or len(header) != 2:
             return None
 
-        prefix, token = map(str.decode, header)
-
-        if prefix.lower() != self.authentication_header_prefix:
+        prefix, token = header
+        if prefix.lower() != self.authentication_header_prefix.lower():
             return None
 
-        return self._authenticate(request, token)
-
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY)
+            payload = jwt.decode(
+                token, settings.SECRET_KEY, algorithms='HS256')
         except jwt.ExpiredSignatureError:
             raise exceptions.AuthenticationFailed("Token has expired")
         except jwt.exceptions.InvalidTokenError:
+            import traceback
+            traceback.print_exc()
             raise exceptions.AuthenticationFailed("Invalid token")
 
         try:
-            user = User.objects.get(pk=payload['id'])
+            user = User.objects.get(id=payload['id'])
         except User.DoesNotExist:
             msg = 'Invalid token. User cannot be found'
             raise exceptions.AuthenticationFailed(msg)

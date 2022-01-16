@@ -1,4 +1,6 @@
 from typing import Dict, Text, Any
+from datetime import datetime, timezone
+import pytz
 from django.contrib.auth.models import AbstractBaseUser
 from rest_framework import serializers, status
 from rest_framework.response import Response
@@ -6,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from django.conf import settings
+from django.urls import reverse
 from .models import User
 
 
@@ -23,27 +26,21 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 
-class UserSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=128)
-    email = serializers.EmailField()
-    name = serializers.CharField(max_length=512)
-    last_login = serializers.DateTimeField(source="lastLogin")
-    modified_at = serializers.DateTimeField(source="modifiedAt")
-    created_at = serializers.DateTimeField(source="createdAt")
-
-    class Meta:
-        model = User
-        fields = ("name", "username", "email", )
-
-
 class LoginSerializer(serializers.Serializer):
 
     email = serializers.EmailField(write_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
 
+    id = serializers.IntegerField(read_only=True)
     username = serializers.CharField(max_length=255, read_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
     expires = serializers.IntegerField(read_only=True)
+    _links = serializers.SerializerMethodField(read_only=True)
+
+    def get__links(self, user: User):
+        return {
+            "user": user["_links"]["user"],
+        }
 
     def validate(self, data: Dict[Text, Any]) -> Dict[Text, Any]:
 
@@ -65,8 +62,13 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 "A user with this email and password was not found."
             )
-
+        user.last_login = datetime.now(pytz.utc)
+        user.save()
         return {
             "expires": settings.TOKEN_LIEFTIME,
-            "token": user.token
+            "token": user.token,
+            "id": user.pk,
+            "_links": {
+                "user":  reverse("user-crud", args=[user.pk])
+            }
         }
