@@ -178,9 +178,9 @@ class PhotoView(APIView):
         return _get_success_response(serialized.data)
 
     def put(self, request: Request, pk: int) -> Response:
+        photo = get_object_or_404(Photo, pk=pk)
         if photo.created_by.pk != request.user.pk:
             return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, None, status=status.HTTP_403_FORBIDDEN)
-        photo = get_object_or_404(Photo, pk=pk)
         title = request.data.get("title", photo.title)
         photo.title = title
         photo.save()

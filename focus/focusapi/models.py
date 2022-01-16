@@ -34,3 +34,12 @@ class Album(BaseModel):
 
     def __str__(self):
         return f'<Photo {self.name}>'
+
+
+class LogOutput(models.Model):
+    description = models.CharField(max_length=512)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'<Log {self.description}>'
