@@ -15,7 +15,7 @@ def _send_request(client: Client,  url: Text, method: Optional[Text] = "GET", re
         client_call = client.put
     elif method == "DELETE":
         client_call = client.delete
-    response = client_call(url, request_body **
+    response = client_call(url, request_body, **
                            headers) if request_body else client_call(url, **headers)
     code = response.status_code
     response = response.content.decode()
