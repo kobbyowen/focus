@@ -31,6 +31,17 @@ You can also set these values directly in the settings.py
 
 ```
 
+## Testing
+
+```bash
+
+$(venv) cd focus
+$(venv) python3 manage.py test focusapi.tests   # test focus APIs
+$(venv) python3 manage.py test user_auth.tests  # test authentication APIs
+
+
+```
+
 ## API Documentation
 
 https://documenter.getpostman.com/view/13293299/UVXkmZyr

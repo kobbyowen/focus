@@ -34,6 +34,12 @@ def get_file_path(filename: Text) -> Text:
     ext = filename.split('.')[-1]
     name = f"{str(uuid.uuid4())}-{hex(int(time()))[:2]}"
     filename = f"{name}.{ext}"
+    if not os.path.exists(settings.UPLOAD_DIR):
+        try:
+            os.mkdir(settings.UPLOAD_DIR)
+        except OSError:
+            # fallback to current directory instead of failing the upload
+            return filename
     return os.path.join(settings.UPLOADS_DIR, filename)
 
 
