@@ -66,13 +66,13 @@ class UserView(APIView):
 
     def get(self, request: Request, pk: int) -> Response:
         if not request.user.is_admin and request.user.pk != pk:
-            return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, None)
+            return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, None, status=status.HTTP_403_FORBIDDEN)
 
         return self._get_user(pk)
 
     def delete(self, request: Request, pk: int) -> Response:
         if not request.user.is_admin:
-            return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, None)
+            return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, None, status=status.HTTP_403_FORBIDDEN)
         user = get_object_or_404(User, pk=pk)
         user.delete()
         return _get_success_response({})
