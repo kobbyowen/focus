@@ -38,7 +38,7 @@ def get_file_path(filename: Text) -> Text:
         try:
             os.mkdir(settings.UPLOAD_DIR)
         except OSError:
-            # fallback to current directory instead of failing the upload
+            # fallback to current directory instead of failing the
             return filename
     return os.path.join(settings.UPLOADS_DIR, filename)
 
