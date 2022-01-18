@@ -17,12 +17,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
         max_length=128, min_length=8, write_only=True)
 
     token = token = serializers.CharField(read_only=True, max_length=512)
+    is_super = serializers.BooleanField(write_only=True)
 
     class Meta:
         model = User
-        fields = ("name", "username", "email", "password", "token")
+        fields = ("name", "username", "email", "password", "token", "is_super")
 
     def create(self, validated_data: Dict[Text, Any]) -> AbstractBaseUser:
+        if validated_data["is_super"]:
+            validated_data.pop("is_super")
+            return User.objects.create_superuser(**validated_data)
         return User.objects.create_user(**validated_data)
 
 
