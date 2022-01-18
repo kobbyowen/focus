@@ -128,4 +128,4 @@ class TestUserView(TestCase):
             self.client, f"/api/v1/user/{self.user.id}", request_body={"name": "kobby owen"}, headers=self.auth_headers)
         self.assertEqual(response["error_code"], SUCCESS_CODE)
         self.assertTrue(User.objects.get(pk=self.user.id).name,
-                        "kobby owen")
+                        "kobbyowen")
