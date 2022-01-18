@@ -16,7 +16,6 @@ urlpatterns = [
     path("album/<int:pk>", SingleAlbumView.as_view(), name="single-album"),
     path("album/<int:pk>/photos", SingleAlbumPhotosView.as_view(),
          name="single-album-photos"),
-
     path("album/<int:album_id>/photo/<int:photo_id>", AlbumPhotosView.as_view(),
          name="single-album-photo"),
 
