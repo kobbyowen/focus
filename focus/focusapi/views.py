@@ -64,11 +64,20 @@ class UserView(APIView):
         return _get_success_response(serialized.data)
 
     def _edit_user(self, user: User, data: Dict[Text, Any]) -> None:
+        if data.get("email"):
+            if User.objects.filter(email=data.get("email")).first() is not None:
+                return None
+
+        if data.get("username"):
+            if User.objects.filter(email=data.get("username")).first() is not None:
+                return None
+
         user.email = data.get("email", user.email)
         user.username = data.get("username", user.username)
         user.name = data.get("name", user.name)
 
         user.save()
+        return user
 
     def get(self, request: Request, pk: int) -> Response:
         if not request.user.is_admin and request.user.pk != pk:
@@ -85,13 +94,14 @@ class UserView(APIView):
 
     def put(self, request: Request, pk: int) -> Response:
         if request.user.pk != pk:
-            return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, None)
+            return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, status=status.HTTP_403_FORBIDDEN)
         user = get_object_or_404(User, pk=pk)
         request.data["user"] = user
         serializer = EditUserSerializer(data=request.data)
         if not serializer.is_valid():
             return _get_error_response(INVALID_LOGIN_CREDENTIALS_CODE, INVALID_LOGIN_CREDENTIALS_MESSAGE, serializer.errors)
-        self._edit_user(user, request.data)
+        if self._edit_user(user, request.data) is None:
+            return _get_error_response(DUPLICATE_CODE, "A user already exists with same email or username", data)
         return self._get_user(pk)
 
 
