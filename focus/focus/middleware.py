@@ -1,4 +1,5 @@
 import json
+import traceback
 from typing import Text, Any, Dict, Optional
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -35,7 +36,6 @@ class HandleExceptionMiddleware:
         return response
 
     def process_exception(self, request: Request, exception: Exception) -> Optional[Response]:
-        import traceback
         traceback.print_exc()
         response = _get_error_response(
             GENERAL_ERROR_CODE, GENERAL_ERROR_MESSAGE, {})

@@ -2,6 +2,7 @@ from typing import Optional, Text, Dict, Any
 from datetime import timedelta, datetime
 import jwt
 from django.db import models
+from django.contrib import admin
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.core import validators
 from django.conf import settings
@@ -23,6 +24,7 @@ class UserManager(BaseUserManager):
 
         user.set_password(password)
         user.is_admin = kwargs.get("admin", False)
+        user.is_superuser = kwargs.get("is_superuser", True)
 
         user.save(using=self._db)
 
@@ -32,7 +34,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, username, name, password)
 
     def create_superuser(self,  email: Text, username: Text, name: Text, password: Optional[Text] = None) -> AbstractBaseUser:
-        return self._create_user(email, username, name, password, admin=True)
+        return self._create_user(email, username, name, password, admin=True, is_super_user=True)
 
 
 class User(PermissionsMixin, AbstractBaseUser):
