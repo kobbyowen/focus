@@ -34,6 +34,12 @@ def get_file_path(filename: Text) -> Text:
     ext = filename.split('.')[-1]
     name = f"{str(uuid.uuid4())}-{hex(int(time()))[:2]}"
     filename = f"{name}.{ext}"
+    if not os.path.exists(settings.UPLOAD_DIR):
+        try:
+            os.mkdir(settings.UPLOAD_DIR)
+        except OSError:
+            # fallback to current directory instead of failing the
+            return filename
     return os.path.join(settings.UPLOADS_DIR, filename)
 
 
@@ -75,20 +81,20 @@ class UserView(APIView):
 
     def get(self, request: Request, pk: int) -> Response:
         if not request.user.is_admin and request.user.pk != pk:
-            return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, None)
+            return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, None, status=status.HTTP_403_FORBIDDEN)
 
         return self._get_user(pk)
 
     def delete(self, request: Request, pk: int) -> Response:
         if not request.user.is_admin:
-            return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, None)
+            return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, None, status=status.HTTP_403_FORBIDDEN)
         user = get_object_or_404(User, pk=pk)
         user.delete()
         return _get_success_response({})
 
     def put(self, request: Request, pk: int) -> Response:
         if request.user.pk != pk:
-            return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, None)
+            return _get_error_response(FORBIDDEN_CODE, FORBIDDEN_MESSAGE, status=status.HTTP_403_FORBIDDEN)
         user = get_object_or_404(User, pk=pk)
         request.data["user"] = user
         serializer = EditUserSerializer(data=request.data)
@@ -96,6 +102,7 @@ class UserView(APIView):
             return _get_error_response(INVALID_LOGIN_CREDENTIALS_CODE, INVALID_LOGIN_CREDENTIALS_MESSAGE, serializer.errors)
         if self._edit_user(user, request.data) is None:
             return _get_error_response(DUPLICATE_ID, "A user exists with same email or username", serializer.errors)
+
         return self._get_user(pk)
 
 

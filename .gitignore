@@ -5,7 +5,9 @@ __pycache__/
 .vscode/
 # C extensions
 *.so
-
+*.sqlite3
+*.sqlite
+*.db
 # Distribution / packaging
 .Python
 build/
