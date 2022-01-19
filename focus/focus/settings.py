@@ -1,14 +1,18 @@
 from pathlib import Path
 import os
 import dj_database_url
+import mimetypes
 
+
+mimetypes.add_type("text/css", ".css", True)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = 'django-insecure-y7yz^5_8-3x99%z5fvrzmc+@aek3^m*1!)k3)a55e(c5%dcb*+'
 DEBUG = False
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', "*"]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost',
+                 "focus-photo-management.herokuapp.com"]
 TOKEN_LIEFTIME = 6000
 
 
@@ -43,7 +47,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "focus.middleware.HandleExceptionMiddleware"
+    "focus.middleware.HandleExceptionMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 
 ]
 
@@ -97,5 +102,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 UPLOADS_DIR = 'uploads/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

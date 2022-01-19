@@ -29,4 +29,5 @@ sqlparse==0.4.2
 toml==0.10.2
 vine==5.0.0
 wcwidth==0.2.5
+whitenoise==5.3.0
 wrapt==1.13.3
