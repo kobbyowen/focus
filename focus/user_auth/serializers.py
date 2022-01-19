@@ -21,13 +21,15 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("name", "username", "email", "password", "token", "is_super")
+        fields = ("name", "username", "email",
+                  "password", "token", "is_super")
 
     def create(self, validated_data: Dict[Text, Any]) -> AbstractBaseUser:
-        if validated_data["is_super"]:
+        create_super = validated_data.get("is_super")
+        if create_super is not None:
             validated_data.pop("is_super")
-            return User.objects.create_superuser(**validated_data)
-        return User.objects.create_user(**validated_data)
+
+        return User.objects.create_superuser(**validated_data) if create_super else User.objects.create_user(**validated_data)
 
 
 class LoginSerializer(serializers.Serializer):

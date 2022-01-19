@@ -4,7 +4,7 @@ from django.test import TestCase, Client
 from unittest.mock import patch
 from django.http import HttpResponse
 from django.db.models.signals import post_save, pre_save
-from focus.signals import catch_user_changes_response
+#from focus.signals import catch_user_changes_response
 from focusapi.models import User
 from focus.errors import *
 
@@ -95,15 +95,15 @@ class TestUserView(TestCase):
             self.client, f"/api/v1/user/{self.user.id}", headers=self.auth_headers)
         self.assertEqual(response["error_code"], SUCCESS_CODE)
 
-    def test_edit_signal_sent(self):
-        with patch('focus.signals.catch_user_changes_response', autospec=True) as mocked_handler:
-            pre_save.connect(mocked_handler, sender=User,
-                             dispatch_uid='test_mock')
+    # def test_edit_signal_sent(self):
+    #     with patch('focus.signals.catch_user_changes_response', autospec=True) as mocked_handler:
+    #         pre_save.connect(mocked_handler, sender=User,
+    #                          dispatch_uid='test_mock')
 
-            response, code = _send_request(
-                self.client, f"/api/v1/user/{self.user.id}", request_body={"username": "owen333"}, headers=self.auth_headers)
-            self.assertEqual(response["error_code"], SUCCESS_CODE)
-            mocked_handler.assert_called()
+    #         response, code = _send_request(
+    #             self.client, f"/api/v1/user/{self.user.id}", request_body={"username": "owen333"}, headers=self.auth_headers)
+    #         self.assertEqual(response["error_code"], SUCCESS_CODE)
+    #         mocked_handler.assert_called()
 
     def test_edit_username(self):
         response, code = _send_request(
